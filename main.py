@@ -3,6 +3,7 @@ import user
 import requests
 import time
 import json
+import gettoken
 
 
 def get_photos(User):
@@ -18,7 +19,10 @@ def get_photos(User):
         # Здесь я беру все фотографии из аватарок у пользователя по айдишнику
         time.sleep(1)
         response = requests.get('https://api.vk.com/method/photos.get', params=params).json()
-        photos = response['response']['items']
+        try:
+            photos = response['response']['items']
+        except KeyError:
+            continue
         # Здесь я создаю словарь, в который собираю пары индекс фотки: количество лайков+комментов
         photo_dict = {}
         for item in range(len(photos)):
@@ -42,4 +46,13 @@ def dump_to_json(dict, filename):
 
 
 if __name__ == '__main__':
-    user = user.User(149109796, 'TOKEN')
+    id = input('Введите свой id: ')
+    print('Пройдите по этой ссылке и скопируйте токен из строки браузера: ')
+    print(gettoken.get_token(id))
+    TOKEN = input()
+    user = user.User(id, TOKEN)
+    dump_to_json(get_photos(user), 'found_users.json')
+    data_table.create_db()
+    data_table.add_user('found_users.json')
+    print(data_table.get_random_people())
+

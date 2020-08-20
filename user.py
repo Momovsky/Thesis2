@@ -51,7 +51,8 @@ class User:
                 'age_to': self.bdate+3,
                 'has_photo': 1,
                 'status': 6,
-                'city': self.city
+                'city': self.city,
+                'is_closed': 0
             }
             time.sleep(2)
             response = requests.get('https://api.vk.com/method/users.search', params=params).json()
